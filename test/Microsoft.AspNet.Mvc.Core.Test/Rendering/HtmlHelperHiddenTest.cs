@@ -243,7 +243,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                            @"value=""HtmlEncode[[modelstate-with-prefix]]"" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(
                 GetViewDataWithModelStateAndModelAndViewDataValues(),
-                "$");
+                idAttributeDotReplacement: "$");
             helper.ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = "MyPrefix";
             helper.ViewData.ModelState.Clear();
             helper.ViewData.ModelState.Add("Property1", GetModelState("modelstate-without-prefix"));
@@ -265,7 +265,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                            @"value=""HtmlEncode[[vdd-with-prefix]]"" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(
                 GetViewDataWithModelStateAndModelAndViewDataValues(),
-                "$");
+                idAttributeDotReplacement: "$");
             helper.ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = "MyPrefix";
             helper.ViewData.ModelState.Clear();
             helper.ViewData.Clear();

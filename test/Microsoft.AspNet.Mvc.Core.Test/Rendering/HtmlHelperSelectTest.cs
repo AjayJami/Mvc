@@ -714,7 +714,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             string expectedHtml)
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper<string>("2");
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper("2");
             helper.ViewData.TemplateInfo.HtmlFieldPrefix = "Property1";
             var savedSelected = selectList.Select(item => item.Selected).ToList();
 
@@ -758,7 +758,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             string expectedHtml)
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper<string>("2");
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper("2");
             helper.ViewData.TemplateInfo.HtmlFieldPrefix = "Property1";
             var savedSelected = selectList.Select(item => item.Selected).ToList();
 

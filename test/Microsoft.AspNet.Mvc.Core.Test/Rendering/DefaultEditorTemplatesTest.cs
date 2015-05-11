@@ -280,7 +280,7 @@ Environment.NewLine;
                 "HtmlEncode[[Formatted string]]<input id=\"HtmlEncode[[FieldPrefix]]\" name=\"HtmlEncode[[FieldPrefix]]\" type=\"HtmlEncode[[hidden]]\" value=\"HtmlEncode[[Model string]]\" />";
 
             var model = "Model string";
-            var html = DefaultTemplatesUtilities.GetHtmlHelper<string>(model);
+            var html = DefaultTemplatesUtilities.GetHtmlHelper(model);
             var templateInfo = html.ViewData.TemplateInfo;
             templateInfo.HtmlFieldPrefix = "FieldPrefix";
 

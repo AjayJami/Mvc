@@ -44,9 +44,9 @@ namespace Microsoft.AspNet.Mvc.Rendering
             public string Property3 { get; set; }
         }
 
-        public static HtmlHelper<ObjectTemplateModel> GetHtmlHelper()
+        public static HtmlHelper<ObjectTemplateModel> GetHtmlHelper(string idAttributeDotReplacement = null)
         {
-            return GetHtmlHelper<ObjectTemplateModel>(model: null);
+            return GetHtmlHelper<ObjectTemplateModel>(model: null, idAttributeDotReplacement: idAttributeDotReplacement);
         }
 
         public static HtmlHelper<IEnumerable<ObjectTemplateModel>> GetHtmlHelperForEnumerable()
@@ -75,7 +75,9 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 htmlGenerator: htmlGenerator);
         }
 
-        public static HtmlHelper<TModel> GetHtmlHelper<TModel>(ViewDataDictionary<TModel> viewData)
+        public static HtmlHelper<TModel> GetHtmlHelper<TModel>(
+            ViewDataDictionary<TModel> viewData,
+            string idAttributeDotReplacement = null)
         {
             return GetHtmlHelper(
                 viewData,
@@ -83,12 +85,13 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 CreateViewEngine(),
                 TestModelMetadataProvider.CreateDefaultProvider(),
                 innerHelperWrapper: null,
-                htmlGenerator: null);
+                htmlGenerator: null,
+                idAttributeDotReplacement: idAttributeDotReplacement);
         }
 
-        public static HtmlHelper<TModel> GetHtmlHelper<TModel>(TModel model)
+        public static HtmlHelper<TModel> GetHtmlHelper<TModel>(TModel model, string idAttributeDotReplacement = null)
         {
-            return GetHtmlHelper(model, CreateViewEngine());
+            return GetHtmlHelper(model, CreateViewEngine(), idAttributeDotReplacement);
         }
 
         public static HtmlHelper<IEnumerable<TModel>> GetHtmlHelperForEnumerable<TModel>(TModel model)
@@ -117,9 +120,17 @@ namespace Microsoft.AspNet.Mvc.Rendering
             return GetHtmlHelper(model, CreateUrlHelper(), CreateViewEngine(), provider);
         }
 
-        public static HtmlHelper<TModel> GetHtmlHelper<TModel>(TModel model, ICompositeViewEngine viewEngine)
+        public static HtmlHelper<TModel> GetHtmlHelper<TModel>(
+            TModel model,
+            ICompositeViewEngine viewEngine,
+            string idAttributeDotReplacement = null)
         {
-            return GetHtmlHelper(model, CreateUrlHelper(), viewEngine, TestModelMetadataProvider.CreateDefaultProvider());
+            return GetHtmlHelper(
+                model,
+                CreateUrlHelper(),
+                viewEngine,
+                TestModelMetadataProvider.CreateDefaultProvider(),
+                idAttributeDotReplacement);
         }
 
         public static HtmlHelper<TModel> GetHtmlHelper<TModel>(
@@ -139,9 +150,16 @@ namespace Microsoft.AspNet.Mvc.Rendering
             TModel model,
             IUrlHelper urlHelper,
             ICompositeViewEngine viewEngine,
-            IModelMetadataProvider provider)
+            IModelMetadataProvider provider,
+            string idAttributeDotReplacement = null)
         {
-            return GetHtmlHelper(model, urlHelper, viewEngine, provider, innerHelperWrapper: null);
+            return GetHtmlHelper(
+                model,
+                urlHelper,
+                viewEngine,
+                provider,
+                innerHelperWrapper: null,
+                idAttributeDotReplacement: idAttributeDotReplacement);
         }
 
         public static HtmlHelper<TModel> GetHtmlHelper<TModel>(
@@ -149,12 +167,20 @@ namespace Microsoft.AspNet.Mvc.Rendering
             IUrlHelper urlHelper,
             ICompositeViewEngine viewEngine,
             IModelMetadataProvider provider,
-            Func<IHtmlHelper, IHtmlHelper> innerHelperWrapper)
+            Func<IHtmlHelper, IHtmlHelper> innerHelperWrapper,
+            string idAttributeDotReplacement = null)
         {
             var viewData = new ViewDataDictionary<TModel>(provider);
             viewData.Model = model;
 
-            return GetHtmlHelper(viewData, urlHelper, viewEngine, provider, innerHelperWrapper, htmlGenerator: null);
+            return GetHtmlHelper(
+                viewData,
+                urlHelper,
+                viewEngine,
+                provider,
+                innerHelperWrapper,
+                htmlGenerator: null,
+                idAttributeDotReplacement: idAttributeDotReplacement);
         }
 
         private static HtmlHelper<TModel> GetHtmlHelper<TModel>(
@@ -163,12 +189,18 @@ namespace Microsoft.AspNet.Mvc.Rendering
             ICompositeViewEngine viewEngine,
             IModelMetadataProvider provider,
             Func<IHtmlHelper, IHtmlHelper> innerHelperWrapper,
-            IHtmlGenerator htmlGenerator)
+            IHtmlGenerator htmlGenerator,
+            string idAttributeDotReplacement = null)
         {
             var httpContext = new DefaultHttpContext();
             var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
             var options = new MvcOptions();
+            options.HtmlHelperOptions = new HtmlHelperOptions();
+            if (!string.IsNullOrEmpty(idAttributeDotReplacement))
+            {
+                options.HtmlHelperOptions.IdAttributeDotReplacement = idAttributeDotReplacement;
+            }
             options.ClientModelValidatorProviders.Add(new DataAnnotationsClientModelValidatorProvider());
             var optionsAccessor = new Mock<IOptions<MvcOptions>>();
             optionsAccessor
@@ -228,7 +260,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 viewData,
                 null,
                 new StringWriter(),
-                new HtmlHelperOptions());
+                options.HtmlHelperOptions);
 
             htmlHelper.Contextualize(viewContext);
 

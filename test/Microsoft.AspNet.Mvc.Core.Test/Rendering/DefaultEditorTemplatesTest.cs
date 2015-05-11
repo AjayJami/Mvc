@@ -280,7 +280,7 @@ Environment.NewLine;
                 "HtmlEncode[[Formatted string]]<input id=\"HtmlEncode[[FieldPrefix]]\" name=\"HtmlEncode[[FieldPrefix]]\" type=\"HtmlEncode[[hidden]]\" value=\"HtmlEncode[[Model string]]\" />";
 
             var model = "Model string";
-            var html = DefaultTemplatesUtilities.GetHtmlHelper(model);
+            var html = DefaultTemplatesUtilities.GetHtmlHelper<string>(model);
             var templateInfo = html.ViewData.TemplateInfo;
             templateInfo.HtmlFieldPrefix = "FieldPrefix";
 
@@ -872,7 +872,6 @@ Environment.NewLine;
             public string IdAttributeDotReplacement
             {
                 get { return _innerHelper.IdAttributeDotReplacement; }
-                set { _innerHelper.IdAttributeDotReplacement = value; }
             }
 
             public IModelMetadataProvider MetadataProvider
